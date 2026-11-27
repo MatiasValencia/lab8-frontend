@@ -3,6 +3,7 @@ import autoImg from './assets/auto.jpg'
 import clienteImg from './assets/cliente.jpg'
 import './App.css'
 import ListaAutos from './ListaAutos'
+import ListaClientes from './ListaClientes'
 
 function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() =>
@@ -42,6 +43,7 @@ function App() {
   }
   const isAutomobilePage =
     path === '/automoviles' || path.startsWith('/automoviles/')
+  const isClientPage = path === '/clientes' || path.startsWith('/clientes/')
 
   return (
     <main className="app-shell" data-theme={theme}>
@@ -79,6 +81,12 @@ function App() {
 
       {isAutomobilePage ? (
         <ListaAutos
+          path={path}
+          onNavigate={navigate}
+          navigateTo={navigateTo}
+        />
+      ) : isClientPage ? (
+        <ListaClientes
           path={path}
           onNavigate={navigate}
           navigateTo={navigateTo}
