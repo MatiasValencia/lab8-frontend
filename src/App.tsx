@@ -1,21 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
 import autoImg from './assets/auto.jpg'
 import clienteImg from './assets/cliente.jpg'
 import './App.css'
+import ListaAutos from './ListaAutos'
 
 function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() =>
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
   )
+  const [path, setPath] = useState(window.location.pathname)
+
+  useEffect(() => {
+    const handlePopState = () => setPath(window.location.pathname)
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  const navigateTo = (destination: string) => {
+    window.history.pushState(null, '', destination)
+    setPath(destination)
+  }
+
+  const navigate = (event: MouseEvent<HTMLAnchorElement>, destination: string) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return
+    }
+
+    event.preventDefault()
+    navigateTo(destination)
+  }
 
   const toggleTheme = () => {
     setTheme((currentTheme) => (currentTheme === 'light' ? 'dark' : 'light'))
   }
+  const isAutomobilePage =
+    path === '/automoviles' || path.startsWith('/automoviles/')
 
   return (
     <main className="app-shell" data-theme={theme}>
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Inicio de AutoGestión">
+        <a
+          className="brand"
+          href="/"
+          aria-label="Inicio de AutoGestión"
+          onClick={(event) => navigate(event, '/')}
+        >
           <span className="brand-mark" aria-hidden="true">A</span>
           <span>AutoGestión</span>
         </a>
@@ -41,39 +77,57 @@ function App() {
         </button>
       </header>
 
-      <section className="welcome">
-        <p className="eyebrow">Laboratorio FullStack</p>
-        <h1>Todo lo que necesitas,<br />en un solo lugar.</h1>
-        <p className="welcome-copy">
-          Explora y administra la información de automóviles y clientes.
-        </p>
-      </section>
+      {isAutomobilePage ? (
+        <ListaAutos
+          path={path}
+          onNavigate={navigate}
+          navigateTo={navigateTo}
+        />
+      ) : (
+        <>
+          <section className="welcome">
+            <p className="eyebrow">Laboratorio FullStack</p>
+            <h1>Todo lo que necesitas,<br />en un solo lugar.</h1>
+            <p className="welcome-copy">
+              Explora y administra la información de automóviles y clientes.
+            </p>
+          </section>
 
-      <section className="destination-grid" aria-label="Secciones disponibles">
-        <a className="destination-card" href="/automoviles">
-          <img src={autoImg} alt="" className="destination-image" />
-          <span className="card-caption">
-            <span className="card-title">Lista de automóviles</span>
-            <span className="card-arrow" aria-hidden="true">↗</span>
-          </span>
-        </a>
-        <a className="destination-card" href="/clientes">
-          <img src={clienteImg} alt="" className="destination-image" />
-          <span className="card-caption">
-            <span className="card-title">Lista de clientes</span>
-            <span className="card-arrow" aria-hidden="true">↗</span>
-          </span>
-        </a>
-      </section>
+          <section className="destination-grid" aria-label="Secciones disponibles">
+            <a
+              className="destination-card"
+              href="/automoviles"
+              onClick={(event) => navigate(event, '/automoviles')}
+            >
+              <img src={autoImg} alt="" className="destination-image" />
+              <span className="card-caption">
+                <span className="card-title">Lista de automóviles</span>
+                <span className="card-arrow" aria-hidden="true">↗</span>
+              </span>
+            </a>
+            <a
+              className="destination-card"
+              href="/clientes"
+              onClick={(event) => navigate(event, '/clientes')}
+            >
+              <img src={clienteImg} alt="" className="destination-image" />
+              <span className="card-caption">
+                <span className="card-title">Lista de clientes</span>
+                <span className="card-arrow" aria-hidden="true">↗</span>
+              </span>
+            </a>
+          </section>
 
-      <aside className="disclaimer" aria-label="Aviso sobre datos de prueba">
-        <span className="disclaimer-icon" aria-hidden="true">i</span>
-        <p>
-          <strong>Proyecto de prueba:</strong> si agregas información de clientes,
-          utiliza únicamente datos ficticios. Esta aplicación es una demostración
-          de cómo funciona FullStack.
-        </p>
-      </aside>
+          <aside className="disclaimer" aria-label="Aviso sobre datos de prueba">
+            <span className="disclaimer-icon" aria-hidden="true">i</span>
+            <p>
+              <strong>Proyecto de prueba:</strong> si agregas información de clientes,
+              utiliza únicamente datos ficticios. Esta aplicación es una demostración
+              de cómo funciona FullStack.
+            </p>
+          </aside>
+        </>
+      )}
 
       <footer className="footer">
         <span>AutoGestión</span>
