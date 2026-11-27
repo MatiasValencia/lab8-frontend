@@ -1,121 +1,85 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import autoImg from './assets/auto.jpg'
+import clienteImg from './assets/cliente.jpg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+  )
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === 'light' ? 'dark' : 'light'))
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <main className="app-shell" data-theme={theme}>
+      <header className="topbar">
+        <a className="brand" href="/" aria-label="Inicio de AutoGestión">
+          <span className="brand-mark" aria-hidden="true">A</span>
+          <span>AutoGestión</span>
+        </a>
+
         <button
+          className="theme-toggle"
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          role="switch"
+          aria-checked={theme === 'dark'}
+          aria-label={`Activar modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
+          onClick={toggleTheme}
         >
-          Count is {count}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+          </svg>
+          <span className="toggle-track">
+            <span className="toggle-thumb" />
+          </span>
+          <svg className="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z" />
+          </svg>
         </button>
+      </header>
+
+      <section className="welcome">
+        <p className="eyebrow">Laboratorio FullStack</p>
+        <h1>Todo lo que necesitas,<br />en un solo lugar.</h1>
+        <p className="welcome-copy">
+          Explora y administra la información de automóviles y clientes.
+        </p>
       </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
+      <section className="destination-grid" aria-label="Secciones disponibles">
+        <a className="destination-card" href="/automoviles">
+          <img src={autoImg} alt="" className="destination-image" />
+          <span className="card-caption">
+            <span className="card-title">Lista de automóviles</span>
+            <span className="card-arrow" aria-hidden="true">↗</span>
+          </span>
+        </a>
+        <a className="destination-card" href="/clientes">
+          <img src={clienteImg} alt="" className="destination-image" />
+          <span className="card-caption">
+            <span className="card-title">Lista de clientes</span>
+            <span className="card-arrow" aria-hidden="true">↗</span>
+          </span>
+        </a>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <aside className="disclaimer" aria-label="Aviso sobre datos de prueba">
+        <span className="disclaimer-icon" aria-hidden="true">i</span>
+        <p>
+          <strong>Proyecto de prueba:</strong> si agregas información de clientes,
+          utiliza únicamente datos ficticios. Esta aplicación es una demostración
+          de cómo funciona FullStack.
+        </p>
+      </aside>
+
+      <footer className="footer">
+        <span>AutoGestión</span>
+        <span>Laboratorio de desarrollo FullStack</span>
+      </footer>
+    </main>
   )
 }
 
